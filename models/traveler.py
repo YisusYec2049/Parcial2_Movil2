@@ -8,7 +8,7 @@ class Traveler(db.Model):
     lastname = db.Column(db.String(50))
     age = db.Column(db.Integer)
     gender = db.Column(db.String(50))
-    city = db.Column(db.String(50), db.ForeignKey('tbllocate.id'))
+    city = db.Column(db.String(50), db.ForeignKey('tblcity.id'))
 
     def __init__(self, name, lastname, age, gender, city):
         self.name = name

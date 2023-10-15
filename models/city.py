@@ -1,7 +1,7 @@
 from config.db import db, ma, app
 
-class Locate(db.Model):
-    __tablename__ = "tbllocate"
+class City(db.Model):
+    __tablename__ = "tblcity"
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50))
@@ -18,6 +18,6 @@ class Locate(db.Model):
 with app.app_context():
     db.create_all()
 
-class LocateSchema(ma.Schema):
+class CitySchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'departament', 'origin', 'destination')

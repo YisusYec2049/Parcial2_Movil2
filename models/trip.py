@@ -8,8 +8,8 @@ class Trip(db.Model):
     driver = db.Column(db.Integer, db.ForeignKey('tbldriver.id'))
     traveler = db.Column(db.Integer, db.ForeignKey('tbltraveler.id'))
     vehicle = db.Column(db.Integer, db.ForeignKey('tblvehicle.id'))
-    origin = db.Column(db.String(50), db.ForeignKey('tbllocate.id'))
-    destination = db.Column(db.String(50),  db.ForeignKey('tbllocate.id'))
+    origin = db.Column(db.String(50), db.ForeignKey('tblcity.id'))
+    destination = db.Column(db.String(50),  db.ForeignKey('tblcity.id'))
 
     def __init__(self, stops, driver, traveler, vehicle, origin, destiantion):
         self.stops = stops 

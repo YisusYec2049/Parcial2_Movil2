@@ -4,8 +4,8 @@ class Route(db.Model):
     __tablename__ = "tblroute"
 
     id = db.Column(db.Integer, primary_key = True)
-    origin = db.Column(db.String(50), db.ForeignKey('tbllocate.id'))
-    destination = db.Column(db.String(50),  db.ForeignKey('tbllocate.id'))
+    origin = db.Column(db.String(50), db.ForeignKey('tblcity.id'))
+    destination = db.Column(db.String(50),  db.ForeignKey('tblcity.id'))
     distance = db.Column(db.String(50))
    
 
