@@ -8,15 +8,15 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     amount = db.Column(db.String(50))
     pay_method = db.Column(db.String(50))
-    status = db.Column(db.String(50))
+    state = db.Column(db.String(50))
     trip_id = db.Column(db.Integer, db.Foreignkey('tbltrip.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('tbluser.id'))
     vehicle_id = db.Column(db.Integer, db.ForeignKey('tblvehicle.id'))
     
-    def __init__(self, amount, pay_method, status, trip_id, user_id, vehicle_id):
+    def __init__(self, amount, pay_method, state, trip_id, user_id, vehicle_id):
         self.amount = amount
         self.pay_method = pay_method
-        self.status = status
+        self.state = state
         self.trip_id = trip_id
         self.user_id = user_id
         self.vehicle_id = vehicle_id
@@ -28,4 +28,4 @@ with app.app_context():
 # The serialization schema for Payment is defined to convert objects into JSON."
 class PaymentSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'amount', 'pay_method', 'status', 'trip_id', 'user_id', 'vehicle_id')
+        fields = ('id', 'amount', 'pay_method', 'state', 'trip_id', 'user_id', 'vehicle_id')

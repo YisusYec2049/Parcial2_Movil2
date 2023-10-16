@@ -8,12 +8,12 @@ class Route(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     distance = db.Column(db.String(50))
     origin_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
-    destiantion_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
+    destination_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
 
-    def __init__(self, distance, origin_city_id, destiantion_city_id):
+    def __init__(self, distance, origin_city_id, destination_city_id):
         self.distance = distance
         self.origin_city_id = origin_city_id
-        self.destiantion_city_id = destiantion_city_id
+        self.destination_city_id = destination_city_id
 
 # The 'tblroute' table is created in the database within the app context."
 with app.app_context():
@@ -22,4 +22,4 @@ with app.app_context():
 # The serialization schema for Route is defined to convert objects into JSON."
 class RouteSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'distance', 'origin', 'destination')
+        fields = ('id', 'distance', 'origin_city_id', 'destination_city_id')

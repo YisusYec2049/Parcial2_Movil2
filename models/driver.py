@@ -20,6 +20,6 @@ with app.app_context():
     db.create_all()
 
 # The serialization schema for Driver is defined to convert objects into JSON."
-class RouteSchema(ma.Schema):
+class DriverSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'lastname', 'license')
