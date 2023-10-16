@@ -1,22 +1,25 @@
 from config.db import db, ma, app
 
+# The data model for the 'tblroute' table is defined.
 class Route(db.Model):
     __tablename__ = "tblroute"
 
+    # The table columns are defined, each with its id."
     id = db.Column(db.Integer, primary_key = True)
-    origin = db.Column(db.String(50), db.ForeignKey('tblcity.id'))
-    destination = db.Column(db.String(50),  db.ForeignKey('tblcity.id'))
     distance = db.Column(db.String(50))
-   
+    origin_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
+    destiantion_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
 
-    def __init__(self, origin, destination, distance):
-        self.origin = origin
-        self.destination = destination
+    def __init__(self, distance, origin_city_id, destiantion_city_id):
         self.distance = distance
+        self.origin_city_id = origin_city_id
+        self.destiantion_city_id = destiantion_city_id
 
+# The 'tblroute' table is created in the database within the app context."
 with app.app_context():
     db.create_all()
 
+# The serialization schema for Route is defined to convert objects into JSON."
 class RouteSchema(ma.Schema):
     class Meta:
-        fields = ("id", "origin", "destination", "distance")
+        fields = ('id', 'distance', 'origin', 'destination')
