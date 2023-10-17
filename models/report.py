@@ -9,7 +9,7 @@ class Report(db.Model):
     type = db.Column(db.String(50))
     content = db.Column(db.String(2000))
     creation_date = db.Column(db.String(50))
-    trip_id = db.Column(db.Integer, db.Foreignkey('tbltrip.id'))
+    trip_id = db.Column(db.Integer, db.ForeignKey('tbltrip.id'))
     
 
 # The 'tblreport' table is created in the database within the app context."

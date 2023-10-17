@@ -2,7 +2,7 @@ from config.db import db, ma, app
 
 # The data model for the 'tblrequest_vehicle' table is defined.
 class Request_Vehicle(db.Model):
-    __tablename__ = "tblrequest_driver"
+    __tablename__ = "tblrequest_vehicle"
 
     # The table columns are defined, each with its id."
     id = db.Column(db.Integer, primary_key = True)

@@ -9,7 +9,7 @@ class Payment(db.Model):
     amount = db.Column(db.String(50))
     pay_method = db.Column(db.String(50))
     state = db.Column(db.String(50))
-    trip_id = db.Column(db.Integer, db.Foreignkey('tbltrip.id'))
+    trip_id = db.Column(db.Integer, db.ForeignKey('tbltrip.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('tbluser.id'))
     vehicle_id = db.Column(db.Integer, db.ForeignKey('tblvehicle.id'))
     

@@ -30,7 +30,7 @@ def save():
     return 'Data saved successfully.'
 
 # Create a route to update an existing passenger.
-@route_passengers.route('/updatepassenger', method = ['PUT'])
+@route_passengers.route('/updatepassenger', methods=['PUT'])
 def update():
     id  = request.json['id']
     name = request.json['name']
@@ -51,7 +51,7 @@ def update():
         return 'Error'
     
 # Create a route to delete a passenger by its ID.
-@route_passengers.route('/deletepassenger<id>', methods = ['DELETE'])
+@route_passengers.route('/deletepassenger/<id>', methods = ['DELETE'])
 def delete(id):
     passenger = Passenger.query.get(id)
     db.session.delete(passenger)

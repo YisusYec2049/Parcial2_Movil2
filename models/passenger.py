@@ -9,8 +9,8 @@ class Passenger(db.Model):
     name = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
     email = db.Column(db.String(50))
-    phone = db.Column()
-    user_id = db.Column(db.Integer, db.ForeignKey('tbluser'))
+    phone = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('tbluser.id'))
 
     def __init__ (self, name, lastname, email, phone, user_id):
         self.name = name

@@ -11,7 +11,7 @@ class Vehicle(db.Model):
     plate = db.Column(db.String(50))
     capacity = db.Column(db.Integer)
     state = db.Column(db.String(50))
-    driver_id = db.Column(db.Integer, db.ForeignKey('tbldriver'))
+    driver_id = db.Column(db.Integer, db.ForeignKey('tbldriver.id'))
 
     def __init__(self, make, model, plate, capacity, state, driver_id):
         self.make = make

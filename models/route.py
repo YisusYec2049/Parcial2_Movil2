@@ -7,8 +7,8 @@ class Route(db.Model):
     # The table columns are defined, each with its id."
     id = db.Column(db.Integer, primary_key = True)
     distance = db.Column(db.String(50))
-    origin_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
-    destination_city_id = db.Column(db.String, db.ForeignKey('tblcity.id'))
+    origin_city_id = db.Column(db.Integer, db.ForeignKey('tblcity.id'))
+    destination_city_id = db.Column(db.Integer, db.ForeignKey('tblcity.id'))
 
     def __init__(self, distance, origin_city_id, destination_city_id):
         self.distance = distance
