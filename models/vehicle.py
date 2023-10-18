@@ -2,30 +2,25 @@ from config.db import db, ma, app
 
 # The data model for the 'tblvehicle' table is defined.
 class Vehicle(db.Model):
-    __tablename__ = "tblvehicle"
+    __tablename__ = "Vehicle"
 
-    # The table columns are defined, each with its id."
-    id = db.Column(db.Integer, primary_key = True)
-    make = db.Column(db.String(50))
-    model = db.Column(db.String(50))
-    plate = db.Column(db.String(50))
-    capacity = db.Column(db.Integer)
-    state = db.Column(db.String(50))
-    driver_id = db.Column(db.Integer, db.ForeignKey('tbldriver.id'))
+    idVehicle = db.Column(db.Integer, primary_key=True)
+    Driver_idDriver = db.Column(db.Integer, db.ForeignKey('Driver.idDriver'), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    make = db.Column(db.String(45), nullable=False)
+    model = db.Column(db.String(45), nullable=False)
 
-    def __init__(self, make, model, plate, capacity, state, driver_id):
+    def __init__(self, Driver_idDriver, capacity, make, model):
+        self.Driver_idDriver = Driver_idDriver
+        self.capacity = capacity
         self.make = make
         self.model = model
-        self.plate = plate
-        self.capacity = capacity
-        self.state = state
-        self.driver_id = driver_id
 
-# The 'tblvehicle' table is created in the database within the app context."
+# Creación de la tabla en la base de datos dentro del contexto de la aplicación
 with app.app_context():
     db.create_all()
 
-# The serialization schema for Vehicle is defined to convert objects into JSON."
+# Definición del esquema de serialización
 class VehicleSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'make', 'model', 'plate', 'capacity', 'state', 'driver_id')
+        fields = ("idVehicle", "Driver_idDriver", "capacity", "make", "model")

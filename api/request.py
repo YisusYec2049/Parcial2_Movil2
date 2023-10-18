@@ -1,6 +1,6 @@
 from flask import Blueprint, request, json, jsonify
 from config.db import db, ma, app
-from models.request import Request, RequestSchema
+from models.request_trip import Request, RequestSchema
 
 # Create a Blueprint to define routes related to requests.
 route_requests = Blueprint('route_request', __name__)

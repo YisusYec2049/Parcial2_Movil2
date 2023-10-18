@@ -1,34 +1,35 @@
 from flask import Flask
 from config.db import db, ma, app
 
-from api.city import route_cities
-from api.driver import route_drivers
+from api.city import city_blueprint
+from api.driver import driver_blueprint
 from api.user import route_users
 from api.route import route_routes
-from api.passenger import route_passengers
+from api.passenger import passenger_blueprint
 from api.vehicle import route_vehicles
 from api.trip import route_trips
-from api.payment import route_payments
-from api.report import route_reports
+from api.payment import payment_blueprint
+from api.report import report_blueprint
 from api.request import route_requests
-from api.request_driver import route_request_drivers
-from api.request_passenger import route_request_passengers
+from api.request_status import request_status_blueprint
 from api.request_vehicle import route_request_vehicles
 from api.trip_passenger import route_trip_passengers
 from api.trip_route import route_trip_routes
+from api.request_trip import request_trip_blueprint
 
 # Registra los Blueprints
-app.register_blueprint(route_cities, url_prefix = '/api')
-app.register_blueprint(route_drivers, url_prefix = '/api')
+app.register_blueprint(city_blueprint)
+app.register_blueprint(driver_blueprint)
 app.register_blueprint(route_users, url_prefix = '/api')
-app.register_blueprint(route_passengers, url_prefix='/api')
+app.register_blueprint(passenger_blueprint)
 app.register_blueprint(route_routes, url_prefix = '/api')
 app.register_blueprint(route_vehicles, url_prefix = '/api')
 app.register_blueprint(route_trips, url_prefix = '/api')
-app.register_blueprint(route_payments, url_prefix = '/api')
-app.register_blueprint(route_reports, url_prefix = '/api')
-app.register_blueprint(route_request_drivers, url_prefix = '/api')
-app.register_blueprint(route_request_passengers, url_prefix = '/api')
+app.register_blueprint(payment_blueprint, url_prefix = '/api')
+app.register_blueprint(report_blueprint, url_prefix = '/api')
+app.register_blueprint(request_status_blueprint)
+app.register_blueprint(request_trip_blueprint)
+
 app.register_blueprint(route_request_vehicles, url_prefix = '/api')
 app.register_blueprint(route_requests, url_prefix = '/api')
 app.register_blueprint(route_trip_passengers, url_prefix = '/api')

@@ -2,21 +2,21 @@ from config.db import db, ma, app
 
 # The data model for the 'tblreport' table is defined.
 class Report(db.Model):
-    __tablename__ = "tblreport"
+    __tablename__ = "Report"
 
-    # The table columns are defined, each with its id."
-    id = db.Column(db.Integer, primary_key = True)
-    type = db.Column(db.String(50))
-    content = db.Column(db.String(2000))
-    creation_date = db.Column(db.String(50))
-    trip_id = db.Column(db.Integer, db.ForeignKey('tbltrip.id'))
-    
+    idReport = db.Column(db.Integer, primary_key=True)
+    date_issue = db.Column(db.DateTime, nullable=False)
+    description = db.Column(db.String(45), nullable=False)
 
-# The 'tblreport' table is created in the database within the app context."
+    def __init__(self, date_issue, description):
+        self.date_issue = date_issue
+        self.description = description
+
+# Creación de la tabla en la base de datos dentro del contexto de la aplicación
 with app.app_context():
     db.create_all()
 
-# The serialization schema for Report is defined to convert objects into JSON."
+# Definición del esquema de serialización
 class ReportSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'type', 'content', 'creation_date', 'trip_id')
+        fields = ("idReport", "date_issue", "description")

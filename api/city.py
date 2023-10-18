@@ -1,56 +1,53 @@
-from flask import Blueprint, request, json, jsonify
-from config.db import db, ma, app
+from flask import Blueprint, request
+from config.db import db
 from models.city import City, CitySchema
 
 # Create a Blueprint to define routes related to cities.
-route_cities = Blueprint('route_city', __name__)
+city_blueprint = Blueprint("city", __name__)
 
 # Define a serialization schema for cities.
-city_schema = CitySchema
+city_schema = CitySchema()
 cities_schema = CitySchema(many=True)
 
-# Create a route to get all cities.
-@route_cities.route('/cities', methods=['GET'])
-def city():
-    resultall = City.query.all()
-    result_city = cities_schema.dump(resultall)
-    return jsonify(result_city)
+# Ruta para crear una nueva ciudad
+@city_blueprint.route("/city/create", methods=["POST"])
+def add_city():
+    name = request.json["name"]
+    new_city = City(name)
 
-# Create a route to save a new city.
-@route_cities.route('/savecities', methods=['POST'])
-def save():
-    name = request.json['name']
-    departament = request.json['departament']
-    origin = request.json['origin']
-    destination = request.json['destination']
-    new_city = City(name, departament, origin, destination)
     db.session.add(new_city)
     db.session.commit()
-    return 'Data saved successfully' 
 
-# Create a route to update an existing city.
-@route_cities.route('/updatecities', methods = ['PUT'])
-def update():
-    id = request.json['id']
-    name = request.json['name']
-    departament = request.json['departament']
-    origin = request.json['origin']
-    destination = request.json['destination']
-    city = City.query.get(id)
-    if city:
-        city.name = name
-        city.departament = departament
-        city.origin = origin
-        city.destination = destination
-        db.session.commit()
-        return 'Data update successfully'
-    else:
-        return 'Error'
+    return city_schema.jsonify(new_city), 201
 
-# Create a route to delete a city by its ID.
-@route_cities.route('/deletecities/<id>', methods = ['DELETE'])
-def delete(id):
-    city = City.query.get(id)
+# Ruta para obtener todas las ciudades
+@city_blueprint.route("/city/get", methods=["GET"])
+def get_cities():
+    cities = City.query.all()
+    return cities_schema.jsonify(cities), 200
+
+# Ruta para obtener una ciudad por su ID
+@city_blueprint.route("/city/get/<int:idCity>", methods=["GET"])
+def get_city(idCity):
+    city = City.query.get(idCity)
+    return city_schema.jsonify(city), 200
+
+# Ruta para actualizar una ciudad por su ID
+@city_blueprint.route("/city/update/<int:idCity>", methods=["PUT"])
+def update_city(idCity):
+    city = City.query.get(idCity)
+    name = request.json["name"]
+
+    city.name = name
+
+    db.session.commit()
+    return city_schema.jsonify(city), 200
+
+# Ruta para eliminar una ciudad por su ID
+@city_blueprint.route("/city/delete/<int:idCity>", methods=["DELETE"])
+def delete_city(idCity):
+    city = City.query.get(idCity)
     db.session.delete(city)
     db.session.commit()
-    return jsonify(city_schema.dump(city))
+
+    return city_schema.jsonify(city), 200

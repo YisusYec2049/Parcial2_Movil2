@@ -2,30 +2,41 @@ from config.db import db, ma, app
 
 # The data model for the 'tbltrip' table is defined.
 class Trip(db.Model):
-    __tablename__ = "tbltrip"
+    __tablename__ = "Trip"
 
-    # The table columns are defined, each with its id."
-    id = db.Column(db.Integer, primary_key = True)
-    start_time = db.Column(db.String(50))
-    end_time = db.Column(db.String(50))
-    route_id = db.Column(db.Integer, db.ForeignKey('tblroute.id'))
-    city_id = db.Column(db.Integer, db.ForeignKey('tblcity.id'))
-    passenger_id = db.Column(db.Integer, db.ForeignKey('tblpassenger.id'))
-    vehicle_id = db.Column(db.Integer, db.ForeignKey('tblvehicle.id'))
+    idTrip = db.Column(db.Integer, primary_key=True)
+    Vehicle_idVehicle = db.Column(db.Integer, db.ForeignKey('Vehicle.idVehicle'), nullable=False)
+    Vehicle_Driver_idDriver = db.Column(db.Integer, db.ForeignKey('Vehicle.Driver_idDriver'), nullable=False)
+    city_destination = db.Column(db.Integer, db.ForeignKey('City.idCity'), nullable=False)
+    city_origin = db.Column(db.Integer, db.ForeignKey('City.idCity'), nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    departure_time = db.Column(db.Time, nullable=False)
+    arrival_time = db.Column(db.Time, nullable=False)
+    price_per_seat = db.Column(db.Float, nullable=False)
+    available_seats = db.Column(db.Integer, nullable=False)
+    route = db.Column(db.String, nullable=False)
+    total_value = db.Column(db.Numeric(precision=10, scale=2), server_default=db.text("(available_seats * price_per_seat)"), nullable=False)
 
-    def __init__(self, start_time, end_time, route_id, city_id, passenger_id, vehicle_id):
+    def __init__(self, Vehicle_idVehicle, Vehicle_Driver_idDriver, city_destination, city_origin,
+                 start_time, departure_time, arrival_time, price_per_seat, available_seats, route):
+        self.Vehicle_idVehicle = Vehicle_idVehicle
+        self.Vehicle_Driver_idDriver = Vehicle_Driver_idDriver
+        self.city_destination = city_destination
+        self.city_origin = city_origin
         self.start_time = start_time
-        self.end_time = end_time
-        self.route_id = route_id
-        self.city_id = city_id
-        self.passenger_id = passenger_id
-        self.vehicle_id = vehicle_id    
+        self.departure_time = departure_time
+        self.arrival_time = arrival_time
+        self.price_per_seat = price_per_seat
+        self.available_seats = available_seats
+        self.route = route
 
-# The 'tbltrip' table is created in the database within the app context."
+# Creación de la tabla en la base de datos dentro del contexto de la aplicación
 with app.app_context():
     db.create_all()
 
-# The serialization schema for Trip is defined to convert objects into JSON."
+# Definición del esquema de serialización
 class TripSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'start_time', 'end_time', 'route_id', 'city_id', 'passenger_id', 'vehicle_id')
+        fields = ("idTrip", "Vehicle_idVehicle", "Vehicle_Driver_idDriver", "city_destination",
+                  "city_origin", "start_time", "departure_time", "arrival_time", "price_per_seat",
+                  "available_seats", "route", "total_value")

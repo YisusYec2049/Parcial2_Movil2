@@ -2,24 +2,23 @@ from config.db import db, ma, app
 
 # The data model for the 'tbldriver' table is defined.
 class Driver(db.Model):
-    __tablename__ = "tbldriver"
+    __tablename__ = "Driver"
 
-    # The table columns are defined, each with its id."
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(50))
-    lastname = db.Column(db.String(50))
-    license = db.Column(db.String(50))
+    idDriver = db.Column(db.Integer, primary_key=True)
+    User_idUser = db.Column(db.Integer, db.ForeignKey('User.idUser'), nullable=False)
+    license = db.Column(db.String(45), nullable=False)
 
-    def __init__(self, name, lastname, license):
-        self.name = name
-        self.lastname = lastname
+    user = db.relationship('User', backref=db.backref('drivers'))
+
+    def __init__(self, user, license):
+        self.user = user
         self.license = license
 
-# The 'tbldriver' table is created in the database within the app context."
+# Creación de la tabla en la base de datos dentro del contexto de la aplicación
 with app.app_context():
     db.create_all()
 
-# The serialization schema for Driver is defined to convert objects into JSON."
+# Definición del esquema de serialización
 class DriverSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'lastname', 'license')
+        fields = ("idDriver", "User_idUser", "license")

@@ -1,29 +1,26 @@
 from config.db import db, ma, app
 
-# The data model for the 'tblpassenger' table is defined.
-class Passenger(db.Model):
-    __tablename__ = 'tblpassenger'
+# The data model for the 'Passenger' table is defined.
+class Passanger(db.Model):
+    __tablename__ = "Passanger"
 
-    # The table columns are defined, each with its id."
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(50))
-    lastname = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-    phone = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('tbluser.id'))
+    idPassanger = db.Column(db.Integer, primary_key=True)
+    User_idUser = db.Column(db.Integer, db.ForeignKey('User.idUser'), nullable=False)
+    preferred_idPayment = db.Column(db.Integer, db.ForeignKey('Payment.idPayment'), nullable=False)
 
-    def __init__ (self, name, lastname, email, phone, user_id):
-        self.name = name
-        self.lastname = lastname
-        self.email = email
-        self.phone = phone
-        self.user_id = user_id
+    user = db.relationship('User', backref='passangers')
+    payment_method = db.relationship('Payment', backref='passangers')
 
-# The 'tblpassenger' table is created in the database within the app context."
+    # Constructor
+    def __init__(self, User_idUser, preferred_idPayment):
+        self.User_idUser = User_idUser
+        self.preferred_idPayment = preferred_idPayment
+
+# Creación de la tabla en la base de datos dentro del contexto de la aplicación
 with app.app_context():
     db.create_all()
 
-# The serialization schema for Passenger is defined to convert objects into JSON."
-class PassengerSchema(ma.Schema):
+# Definición del esquema de serialización
+class PassangerSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'lastname', 'email', 'phone', 'user_id')
+        fields = ("idPassanger", "User_idUser", "preferred_idPayment")

@@ -2,59 +2,52 @@ from flask import Blueprint, request, json, jsonify
 from config.db import db, ma, app
 from models.passenger import Passenger, PassengerSchema
 
-# Create a Blueprint to define routes related to passengers.
-route_passengers = Blueprint('route_passenger', __name__)
-
-# Define a serialization schema for passengers.
-passenger_schema = PassengerSchema
+passenger_blueprint = Blueprint("passenger", __name__)
+passenger_schema = PassengerSchema()
 passengers_schema = PassengerSchema(many=True)
 
-# Create a route to get all passengers.
-@route_passengers.route('/passengers', methods = ['GET'])
-def passenger():
-    resultall = Passenger.query.all()
-    result_passenger = passengers_schema.dump(resultall)
-    return jsonify(result_passenger)
+# Ruta para crear un nuevo pasajero
+@passenger_blueprint.route("/passenger/create", methods=["POST"])
+def add_passenger():
+    User_idUser = request.json["User_idUser"]
+    preferred_idPayment = request.json["preferred_idPayment"]
+    new_passenger = Passenger(User_idUser, preferred_idPayment)
 
-# Create a route to save a new passsenger.
-@route_passengers.route('/savepassenger', methods = ['POST'])
-def save():
-    name = request.json['name']
-    lastname = request.json['lastname']
-    email = request.json['email']
-    phone = request.json['phone']
-    user_id = request.json['user_id']
-    new_passenger = Passenger(name, lastname, email, phone, user_id)
     db.session.add(new_passenger)
     db.session.commit()
-    return 'Data saved successfully.'
 
-# Create a route to update an existing passenger.
-@route_passengers.route('/updatepassenger', methods=['PUT'])
-def update():
-    id  = request.json['id']
-    name = request.json['name']
-    lastname = request.json['lastname']
-    email = request.json['email']
-    phone = request.json['phone']
-    user_id = request.json['user_id']
-    passenger = Passenger.query.get(id)
-    if passenger:
-        passenger.name = name
-        passenger.lastname = lastname
-        passenger.email = email
-        passenger.phone = phone
-        passenger.user_id = user_id
-        db.session.commit()
-        return 'Data update successfully.'
-    else:
-        return 'Error'
-    
-# Create a route to delete a passenger by its ID.
-@route_passengers.route('/deletepassenger/<id>', methods = ['DELETE'])
-def delete(id):
-    passenger = Passenger.query.get(id)
+    return passenger_schema.jsonify(new_passenger), 201
+
+# Ruta para obtener todos los pasajeros
+@passenger_blueprint.route("/passenger/get", methods=["GET"])
+def get_passengers():
+    passengers = Passenger.query.all()
+    return passengers_schema.jsonify(passengers), 200
+
+# Ruta para obtener un pasajero por su ID
+@passenger_blueprint.route("/passenger/get/<int:idPassenger>", methods=["GET"])
+def get_passenger(idPassenger):
+    passenger = Passenger.query.get(idPassenger)
+    return passenger_schema.jsonify(passenger), 200
+
+# Ruta para actualizar un pasajero por su ID
+@passenger_blueprint.route("/passenger/update/<int:idPassenger>", methods=["PUT"])
+def update_passenger(idPassenger):
+    passenger = Passenger.query.get(idPassenger)
+    User_idUser = request.json["User_idUser"]
+    preferred_idPayment = request.json["preferred_idPayment"]
+
+    passenger.User_idUser = User_idUser
+    passenger.preferred_idPayment = preferred_idPayment
+
+    db.session.commit()
+    return passenger_schema.jsonify(passenger), 200
+
+# Ruta para eliminar un pasajero por su ID
+@passenger_blueprint.route("/passenger/delete/<int:idPassenger>", methods=["DELETE"])
+def delete_passenger(idPassenger):
+    passenger = Passenger.query.get(idPassenger)
     db.session.delete(passenger)
     db.session.commit()
-    return jsonify(passenger_schema.dump(passenger))
 
+    return passenger_schema.jsonify(passenger), 200

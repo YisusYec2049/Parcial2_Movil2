@@ -2,52 +2,52 @@ from flask import Blueprint, request, json, jsonify
 from config.db import db, ma, app
 from models.driver import Driver, DriverSchema
 
-# Create a Blueprint to define routes related to drivers.
-route_drivers = Blueprint('route_driver', __name__)
-
-# Define a serialization schema for drivers.
-driver_schema = DriverSchema
+driver_blueprint = Blueprint("driver", __name__)
+driver_schema = DriverSchema()
 drivers_schema = DriverSchema(many=True)
 
-# Create a route to get all drivers.
-@route_drivers.route('/drivers', methods = ['GET'])
-def driver():
-    resultall = Driver.query.all()
-    result_driver = drivers_schema.dump(resultall)
-    return jsonify(result_driver)
+# Ruta para crear un nuevo conductor
+@driver_blueprint.route("/driver/create", methods=["POST"])
+def add_driver():
+    User_idUser = request.json["User_idUser"]
+    license = request.json["license"]
+    new_driver = Driver(User_idUser, license)
 
-# Create a route to save a new driver.
-@route_drivers.route('/savedrivers', methods = ['POST'])
-def save():
-    name = request.json['name']
-    lastname = request.json['lastname']
-    license = request.json['license']
-    new_driver = Driver(name, lastname, license)
     db.session.add(new_driver)
     db.session.commit()
-    return 'Data saved successfully'
 
-# Create a route to update an existing driver.
-@route_drivers.route('/updatedrivers', methods = ['PUT'])
-def update():
-    id = request.json['id']
-    name = request.json['name']
-    lastname = request.json['lastname']
-    license = request.json['license']
-    driver = Driver.query.get(id)
-    if driver:
-        driver.name = name
-        driver.lastname = name
-        driver.license = license
-        db.session.commit()
-        return 'Data update successfully'
-    else:
-        return 'Error'
-    
-# Create a route to delete a driver by its ID.
-@route_drivers.route('/deletedrivers/<id>', methods =['DELETE'])
-def delete(id):
-    driver = Driver.query.get(id)
+    return driver_schema.jsonify(new_driver), 201
+
+# Ruta para obtener todos los conductores
+@driver_blueprint.route("/driver/get", methods=["GET"])
+def get_drivers():
+    drivers = Driver.query.all()
+    return drivers_schema.jsonify(drivers), 200
+
+# Ruta para obtener un conductor por su ID
+@driver_blueprint.route("/driver/get/<int:idDriver>", methods=["GET"])
+def get_driver(idDriver):
+    driver = Driver.query.get(idDriver)
+    return driver_schema.jsonify(driver), 200
+
+# Ruta para actualizar un conductor por su ID
+@driver_blueprint.route("/driver/update/<int:idDriver>", methods=["PUT"])
+def update_driver(idDriver):
+    driver = Driver.query.get(idDriver)
+    User_idUser = request.json["User_idUser"]
+    license = request.json["license"]
+
+    driver.User_idUser = User_idUser
+    driver.license = license
+
+    db.session.commit()
+    return driver_schema.jsonify(driver), 200
+
+# Ruta para eliminar un conductor por su ID
+@driver_blueprint.route("/driver/delete/<int:idDriver>", methods=["DELETE"])
+def delete_driver(idDriver):
+    driver = Driver.query.get(idDriver)
     db.session.delete(driver)
     db.session.commit()
-    return jsonify(driver_schema.dump(driver))
+
+    return driver_schema.jsonify(driver), 200

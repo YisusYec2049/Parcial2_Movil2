@@ -1,29 +1,27 @@
 from config.db import db, ma, app
 
-# The data model for the 'tbluser' table is defined.
 class User(db.Model):
-    __tablename__ = "tbluser"
+    __tablename__ = "User"
 
-    # The table columns are defined, each with its id."
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-    password = db.Column(db.String(50))
-    phone = db.Column(db.Integer)
-    gender = db.Column(db.String(50))
+    idUser = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(45), nullable=False)
+    lastname = db.Column(db.String(45))
+    number = db.Column(db.Integer, nullable=False)
+    email = db.Column(db.String(200))
+    password = db.Column(db.String(45), nullable=False)
 
-    def __init__(self, name, email, password, phone, gender):
+    def __init__(self, name, lastname, number, email, password):
         self.name = name
+        self.lastname = lastname
+        self.number = number
         self.email = email
         self.password = password
-        self.phone = phone
-        self.gender = gender
 
-# The 'tbluser' table is created in the database within the app context."
+# Creación de la tabla en la base de datos dentro del contexto de la aplicación
 with app.app_context():
     db.create_all()
 
-# The serialization schema for User is defined to convert objects into JSON."
+# Definición del esquema de serialización
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'email', 'password', 'phone', 'gender')
+        fields = ("idUser", "name", "lastname", "number", "email", "password")
