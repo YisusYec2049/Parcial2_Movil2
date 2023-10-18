@@ -1,5 +1,5 @@
-from flask import Blueprint, request, json, jsonify
-from config.db import db, ma, app
+from flask import Blueprint, request
+from config.db import db
 from models.payment import Payment, PaymentSchema
 
 payment_blueprint = Blueprint("payment", __name__)

@@ -1,62 +1,79 @@
-from flask import Blueprint, request, json, jsonify
-from config.db import db, ma, app
+from flask import Blueprint, request
+from config.db import db
 from models.trip import Trip, TripSchema
 
 # Create a Blueprint to define routes related to trips.
-route_trips = Blueprint('trip', __name__)
-
-# Define a serialization schema for trips.
-trip_schema = TripSchema
+trip_blueprint = Blueprint("trip", __name__)
+trip_schema = TripSchema()
 trips_schema = TripSchema(many=True)
 
-# Create a route to get all trips.
-@route_trips.route('/trips', methods = ['GET'])
-def trip():
-    resultall = Trip.query.all()
-    result_trip = trips_schema.dump(resultall)
-    return jsonify(result_trip)
+# Ruta para crear un nuevo viaje
+@trip_blueprint.route("/trip/create", methods=["POST"])
+def add_trip():
+    Vehicle_idVehicle = request.json["Vehicle_idVehicle"]
+    Vehicle_Driver_idDriver = request.json["Vehicle_Driver_idDriver"]
+    city_destination = request.json["city_destination"]
+    city_origin = request.json["city_origin"]
+    start_time = request.json["start_time"]
+    departure_time = request.json["departure_time"]
+    arrival_time = request.json["arrival_time"]
+    price_per_seat = request.json["price_per_seat"]
+    available_seats = request.json["available_seats"]
+    route = request.json["route"]
 
-# Create a route to save a new trip_vehicle.
-@route_trips.route('/savetrip', methods = ['POST'])
-def save():
-    start_time = request.json['start_time']
-    end_time = request.json['end_time']
-    route_id = request.json['route_id']
-    city_id = request.json['city_id']
-    passenger_id = request.json['passenger_id']
-    vehicle_id = request.json['vehicle_id']
-    new_trip = Trip(start_time , end_time, route_id, city_id, passenger_id, vehicle_id)
+    new_trip = Trip(Vehicle_idVehicle, Vehicle_Driver_idDriver, city_destination, city_origin, start_time, departure_time, arrival_time, price_per_seat, available_seats, route)
+
     db.session.add(new_trip)
     db.session.commit()
-    return 'Data saved successfully'
 
-# Create a route to update an existing trip.
-@route_trips.route('/updatetrip', methods = ['PUT'])
-def update():
-    id = request.json['id']
-    start_time = request.json['start_time']
-    end_time = request.json['end_time']
-    route_id = request.json['route_id']
-    city_id = request.json['city_id']
-    passenger_id = request.json['passenger_id']
-    vehicle_id = request.json['vehicle_id']
-    trip = Trip.query.get(id)
-    if trip:
-        trip.start_time = start_time
-        trip.end_time = end_time
-        trip.route_id = route_id
-        trip.city_id = city_id
-        trip.passenger_id = passenger_id
-        trip.vehicle_id = vehicle_id
-        db.session.commit()
-        return 'Data update successfully'
-    else:
-        return 'Error'
-    
-# Create a route to delete a trip by its ID.
-@route_trips.route('/deletetrip<id>', methods = ['DELETE'])
-def delete(id):
-    trip = Trip.query.get(id)
+    return trip_schema.jsonify(new_trip), 201
+
+# Ruta para obtener todos los viajes
+@trip_blueprint.route("/trip/get", methods=["GET"])
+def get_trips():
+    trips = Trip.query.all()
+    return trips_schema.jsonify(trips), 200
+
+# Ruta para obtener un viaje por su ID
+@trip_blueprint.route("/trip/get/<int:idTrip>", methods=["GET"])
+def get_trip(idTrip):
+    trip = Trip.query.get(idTrip)
+    return trip_schema.jsonify(trip), 200
+
+# Ruta para actualizar un viaje por su ID
+@trip_blueprint.route("/trip/update/<int:idTrip>", methods=["PUT"])
+def update_trip(idTrip):
+    trip = Trip.query.get(idTrip)
+    Vehicle_idVehicle = request.json["Vehicle_idVehicle"]
+    Vehicle_Driver_idDriver = request.json["Vehicle_Driver_idDriver"]
+    city_destination = request.json["city_destination"]
+    city_origin = request.json["city_origin"]
+    start_time = request.json["start_time"]
+    departure_time = request.json["departure_time"]
+    arrival_time = request.json["arrival_time"]
+    price_per_seat = request.json["price_per_seat"]
+    available_seats = request.json["available_seats"]
+    route = request.json["route"]
+
+    trip.Vehicle_idVehicle = Vehicle_idVehicle
+    trip.Vehicle_Driver_idDriver = Vehicle_Driver_idDriver
+    trip.city_destination = city_destination
+    trip.city_origin = city_origin
+    trip.start_time = start_time
+    trip.departure_time = departure_time
+    trip.arrival_time = arrival_time
+    trip.price_per_seat = price_per_seat
+    trip.available_seats = available_seats
+    trip.route = route
+
+    db.session.commit()
+    return trip_schema.jsonify(trip), 200
+
+# Ruta para eliminar un viaje por su ID
+@trip_blueprint.route("/trip/delete/<int:idTrip>", methods=["DELETE"])
+def delete_trip(idTrip):
+    trip = Trip.query.get(idTrip)
     db.session.delete(trip)
     db.session.commit()
-    return jsonify(trip_schema.dump(trip))
+
+    return trip_schema.jsonify(trip), 200

@@ -3,57 +3,62 @@ from config.db import db, ma, app
 from models.user import User, UserSchema
 
 # Create a Blueprint to define routes related to users.
-route_users = Blueprint('user', __name__)
-
-# Define a serialization schema for users.
-user_schema = UserSchema
+user_blueprint = Blueprint("user", __name__)
+user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
-# Create a route to get all users.
-@route_users.route('/users', methods = ['GET'])
-def user():
-    resultall = User.query.all()
-    result_user = users_schema.dump(resultall)
-    return jsonify(result_user)
+# Ruta para crear un nuevo usuario
+@user_blueprint.route("/user/create", methods=["POST"])
+def add_user():
+    name = request.json["name"]
+    lastname = request.json.get("lastname")
+    number = request.json["number"]
+    email = request.json.get("email")
+    password = request.json["password"]
 
-# Create a route to save a new user.
-@route_users.route('/saveuser', methods = ['POST'])
-def save():
-    name = request.json['name']
-    email = request.json['email']
-    password = request.json['password']
-    phone = request.json['phone']
-    gender = request.json['gender']
-    new_user = User(name , email, password, phone, gender)
+    new_user = User(name, lastname, number, email, password)
+
     db.session.add(new_user)
     db.session.commit()
-    return 'Data saved successfully'
 
-# Create a route to update an existing user.
-@route_users.route('/updateuser', methods = ['PUT'])
-def update():
-    id = request.json['id']
-    name = request.json['name']
-    email = request.json['email']
-    password = request.json['password']
-    phone = request.json['phone']
-    gender = request.json['gender']
-    user = User.query.get(id)
-    if user:
-        user.name = name
-        user.email = email
-        user.password = password
-        user.phone = phone
-        user.gender = gender
-        db.session.commit()
-        return 'Data update successfully'
-    else:
-        return 'Error'
-    
-# Create a route to delete a user by its ID.
-@route_users.route('/deleteuser<id>', methods = ['DELETE'])
-def delete(id):
-    user = User.query.get(id)
+    return user_schema.jsonify(new_user), 201
+
+# Ruta para obtener todos los usuarios
+@user_blueprint.route("/user/get", methods=["GET"])
+def get_users():
+    users = User.query.all()
+    return users_schema.jsonify(users), 200
+
+# Ruta para obtener un usuario por su ID
+@user_blueprint.route("/user/get/<int:idUser>", methods=["GET"])
+def get_user(idUser):
+    user = User.query.get(idUser)
+    return user_schema.jsonify(user), 200
+
+# Ruta para actualizar un usuario por su ID
+@user_blueprint.route("/user/update/<int:idUser>", methods=["PUT"])
+def update_user(idUser):
+    user = User.query.get(idUser)
+    name = request.json["name"]
+    lastname = request.json.get("lastname")
+    number = request.json["number"]
+    email = request.json.get("email")
+    password = request.json["password"]
+
+    user.name = name
+    user.lastname = lastname
+    user.number = number
+    user.email = email
+    user.password = password
+
+    db.session.commit()
+    return user_schema.jsonify(user), 200
+
+# Ruta para eliminar un usuario por su ID
+@user_blueprint.route("/user/delete/<int:idUser>", methods=["DELETE"])
+def delete_user(idUser):
+    user = User.query.get(idUser)
     db.session.delete(user)
     db.session.commit()
-    return jsonify(user_schema.dump(user))
+
+    return user_schema.jsonify(user), 200

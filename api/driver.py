@@ -1,5 +1,5 @@
-from flask import Blueprint, request, json, jsonify
-from config.db import db, ma, app
+from flask import Blueprint, request
+from config.db import db
 from models.driver import Driver, DriverSchema
 
 driver_blueprint = Blueprint("driver", __name__)
