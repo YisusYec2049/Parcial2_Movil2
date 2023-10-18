@@ -17,6 +17,24 @@ def add_payment():
 
     return payment_schema.jsonify(new_payment), 201
 
+# Ruta para crear múltiples métodos de pago
+@payment_blueprint.route("/payment/create_multiple", methods=["POST"])
+def add_multiple_payments():
+    data = request.get_json()  # Obtener la lista de métodos de pago desde la solicitud JSON
+
+    # Crear una lista para almacenar los nuevos métodos de pago
+    new_payments = []
+
+    for item in data:
+        name = item["name"]
+        new_payment = Payment(name)
+        db.session.add(new_payment)
+        new_payments.append(new_payment)
+
+    db.session.commit()
+
+    return payments_schema.jsonify(new_payments), 201
+
 # Ruta para obtener todos los métodos de pago
 @payment_blueprint.route("/payment/get", methods=["GET"])
 def get_payments():

@@ -14,7 +14,7 @@ class Trip(db.Model):
     arrival_time = db.Column(db.Time, nullable=False)
     price_per_seat = db.Column(db.Float, nullable=False)
     available_seats = db.Column(db.Integer, nullable=False)
-    route = db.Column(db.String, nullable=False)
+    route = db.Column(db.String(100), nullable=False)
     total_value = db.Column(db.Numeric(precision=10, scale=2), server_default=db.text("(available_seats * price_per_seat)"), nullable=False)
 
     def __init__(self, Vehicle_idVehicle, Vehicle_Driver_idDriver, city_destination, city_origin,

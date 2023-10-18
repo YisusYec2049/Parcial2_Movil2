@@ -20,6 +20,23 @@ def add_city():
 
     return city_schema.jsonify(new_city), 201
 
+# Ruta para agregar una o más ciudades
+@city_blueprint.route("/cities/add", methods=["POST"])
+def add_cities():
+    cities_data = request.json  # Espera una lista de ciudades en el cuerpo de la solicitud
+
+    added_cities = []
+    for city_data in cities_data:
+        if "name" in city_data:
+            name = city_data["name"]
+            new_city = City(name=name)
+            db.session.add(new_city)
+            added_cities.append(new_city)
+
+    db.session.commit()
+
+    return cities_schema.jsonify(added_cities), 201
+
 # Ruta para obtener todas las ciudades
 @city_blueprint.route("/city/get", methods=["GET"])
 def get_cities():

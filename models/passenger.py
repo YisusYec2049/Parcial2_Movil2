@@ -1,7 +1,7 @@
 from config.db import db, ma, app
 
 # The data model for the 'Passenger' table is defined.
-class Passanger(db.Model):
+class Passenger(db.Model):
     __tablename__ = "Passanger"
 
     idPassanger = db.Column(db.Integer, primary_key=True)
@@ -21,6 +21,6 @@ with app.app_context():
     db.create_all()
 
 # Definición del esquema de serialización
-class PassangerSchema(ma.Schema):
+class PassengerSchema(ma.Schema):
     class Meta:
         fields = ("idPassanger", "User_idUser", "preferred_idPayment")
