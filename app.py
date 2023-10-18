@@ -18,9 +18,6 @@ from api.trip_passenger import route_trip_passengers
 from api.trip_route import route_trip_routes
 from api.trip_vehicle import route_trip_vehicles
 
-app = Flask(__name__)
-
-
 # Registra los Blueprints
 app.register_blueprint(route_cities, url_prefix = '/api')
 app.register_blueprint(route_drivers, url_prefix = '/api')
