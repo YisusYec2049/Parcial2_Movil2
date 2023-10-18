@@ -16,7 +16,6 @@ from api.request_passenger import route_request_passengers
 from api.request_vehicle import route_request_vehicles
 from api.trip_passenger import route_trip_passengers
 from api.trip_route import route_trip_routes
-from api.trip_vehicle import route_trip_vehicles
 
 # Registra los Blueprints
 app.register_blueprint(route_cities, url_prefix = '/api')
@@ -34,7 +33,6 @@ app.register_blueprint(route_request_vehicles, url_prefix = '/api')
 app.register_blueprint(route_requests, url_prefix = '/api')
 app.register_blueprint(route_trip_passengers, url_prefix = '/api')
 app.register_blueprint(route_trip_routes, url_prefix = '/api')
-app.register_blueprint(route_trip_vehicles, url_prefix = '/api')
 
 
 # Ruta principal
