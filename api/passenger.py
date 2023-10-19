@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from config.db import db
 from models.passenger import Passenger, PassengerSchema
+from models.user import User
 
 passenger_blueprint = Blueprint("passenger", __name__)
 passenger_schema = PassengerSchema()
@@ -11,12 +12,17 @@ passengers_schema = PassengerSchema(many=True)
 def add_passenger():
     User_idUser = request.json["User_idUser"]
     preferred_idPayment = request.json["preferred_idPayment"]
-    new_passenger = Passenger(User_idUser, preferred_idPayment)
 
-    db.session.add(new_passenger)
-    db.session.commit()
+    # Busca el usuario basado en el idUser
+    user = User.query.get(User_idUser)
 
-    return passenger_schema.jsonify(new_passenger), 201
+    if user:
+        new_passenger = Passenger(User_idUser, preferred_idPayment)
+        db.session.add(new_passenger)
+        db.session.commit()
+        return passenger_schema.jsonify(new_passenger), 201
+    else:
+        return {"message": "Usuario no encontrado"}, 404
 
 # Ruta para obtener todos los pasajeros
 @passenger_blueprint.route("/passenger/get", methods=["GET"])
