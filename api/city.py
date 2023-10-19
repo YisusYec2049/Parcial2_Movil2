@@ -51,14 +51,23 @@ def get_city(idCity):
 
 # Ruta para actualizar una ciudad por su ID
 @city_blueprint.route("/city/update/<int:idCity>", methods=["PUT"])
-def update_city(idCity):
-    city = City.query.get(idCity)
-    name = request.json["name"]
+@city_blueprint.route("/city/update", methods=["PUT"])
+def update_city(idCity=None):
+    if idCity is not None:
+        city = City.query.get(idCity)
+    else:
+        # Si el parámetro idCity no se proporciona en la URL, intenta obtenerlo de la cadena de consulta
+        idCity = request.args.get("idCity")
+        if idCity is not None:
+            city = City.query.get(idCity)
 
-    city.name = name
-
-    db.session.commit()
-    return city_schema.jsonify(city), 200
+    if city:
+        name = request.json.get("name")
+        if name is not None:
+            city.name = name
+            db.session.commit()
+            return city_schema.jsonify(city), 200
+    return {"message": "Ciudad no encontrada"}, 404
 
 # Ruta para eliminar una ciudad por su ID
 @city_blueprint.route("/city/delete", methods=["DELETE"])
