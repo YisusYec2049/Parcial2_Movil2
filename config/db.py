@@ -1,38 +1,19 @@
-# auto_assignment.py
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
-from models.request_trip import RequestTrip
-from models.vehicle import Vehicle
-from config.db import db
+app = Flask(__name__)
 
-def auto_assign_requests():
-    # Paso 1: Obtener las solicitudes en espera
-    pending_requests = RequestTrip.query.filter_by(status='en espera').all()
+host = "jesusespinosa.mysql.pythonanywhere-services.com"
+user = "jesusespinosa"
+bd = "jesusespinosa$test"
+passw = "superpassword"
 
-    for request in pending_requests:
-        # Paso 2: Evaluar las características de la solicitud
-        origin = request.city_origin
-        destination = request.city_destination
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{user}:{passw}@{host}/{bd}'  # Reemplaza con tus propios datos
+app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
-        # Paso 3: Buscar viajes existentes que coincidan
-        matching_trips = Vehicle.query.filter(Vehicle.city_origin == origin, Vehicle.city_destination == destination, Vehicle.available_seats > 0).all()
+app.secret_key = ""
 
-        if matching_trips:
-            # Paso 4: Asignar la solicitud a un viaje existente
-            trip = matching_trips[0]  # Aquí puedes aplicar lógica para elegir el viaje más eficiente si hay múltiples coincidencias
-            trip.add_request(request)  # Agregar la solicitud al viaje
-            request.status = 'asignada'
-            db.session.commit()
-        else:
-            # Paso 5: Crear un nuevo viaje si no hay coincidencias
-            new_trip = Vehicle(city_origin=origin, city_destination=destination, available_seats=trip.capacity)
-            new_trip.add_request(request)  # Agregar la solicitud al nuevo viaje
-            request.status = 'asignada'
-            db.session.add(new_trip)
-            db.session.commit()
+db = SQLAlchemy(app)
 
-        # Puedes aplicar lógica adicional para la eficiencia logística aquí
-
-    # Paso 6: Guardar los cambios en la base de datos
-
-if __name__ == "__main__":
-    auto_assign_requests()
+ma = Marshmallow(app)
