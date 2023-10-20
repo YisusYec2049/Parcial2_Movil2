@@ -4,7 +4,12 @@ from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/test'  # Reemplaza con tus propios datos
+host = "jesusespinosa.mysql.pythonanywhere-services.com"
+user = "jesusespinosa"
+bd = "jesusespinosa$test"
+passw = "superpassword"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{user}:{passw}@{host}/{bd}'  # Reemplaza con tus propios datos
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 app.secret_key = ""
