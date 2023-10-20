@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from config.db import db
 from models.driver import Driver, DriverSchema
+from models.user import User
 
 driver_blueprint = Blueprint("driver", __name__)
 driver_schema = DriverSchema()
@@ -9,14 +10,20 @@ drivers_schema = DriverSchema(many=True)
 # Ruta para crear un nuevo conductor
 @driver_blueprint.route("/driver/create", methods=["POST"])
 def add_driver():
-    User_idUser = request.json["User_idUser"]
+    user_id = request.json.get("User_idUser")
     license = request.json["license"]
-    new_driver = Driver(User_idUser, license)
 
-    db.session.add(new_driver)
-    db.session.commit()
+    # Busca el usuario basado en el idUser
+    user = User.query.get(user_id)
 
-    return driver_schema.jsonify(new_driver), 201
+    if user:
+        new_driver = Driver(user, license)
+        db.session.add(new_driver)
+        db.session.commit()
+        return driver_schema.jsonify(new_driver), 201
+    else:
+        return {"message": "Usuario no encontrado"}, 404
+
 
 # Ruta para obtener todos los conductores
 @driver_blueprint.route("/driver/get", methods=["GET"])
